@@ -7,7 +7,8 @@ var clone = function (target, source, mode) {
     if(source instanceof Array) {
       copy = [];
       for(i; i < source.length; i++) {
-        copy[i] = clone([],source[i]);
+        copy[i] = clone(target[i],source[i]);
+        target[i] = copy[i];
       }
       return copy;
     }
@@ -21,10 +22,11 @@ var clone = function (target, source, mode) {
         }
       }
       return copy;
-    }
-
-  // }
+    // }
+  }
 };
+
+var arr = [];
 
 var a = {
    b: {d: 'd'}
@@ -39,8 +41,8 @@ var obj = {
   }
 };
 
-clone(copy, obj, true);
-console.log(copy);
+clone(arr, obj, true);
+console.log(arr);
 
 var c = clone({}, a, true);
 
