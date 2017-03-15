@@ -15,3 +15,4 @@ var clone = function (source) {
     throw new TypeError ('Wrong type of argument!')
   }
 };
+//
