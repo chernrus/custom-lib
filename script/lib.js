@@ -88,17 +88,65 @@
     } else if(!mode){
       each (source, function(key){
         target[key] = source[key];
-      });  // не работает!
+      });
       return source;
     } else {
       throw new TypeError('Wrong type of \'mode\'. Must be \'true\' or \'false\'!');
     }
   };
 
+  /* Функция AJAX
+  *@param (Object) settings - объект, содержащий настройки запроса
+  */
+  var ajax = function (settings) {
+    var ajaxSetting = {
+      url: '/',
+      method: 'GET',
+      data: {},
+      async: true,
+      headers: '',
+      dataType: '*/*',
+      success: function(){
+        alert('Success');
+      },
+      error: function(){
+        alert('Error');
+      }
+    }
+    //Установка конфигураций
+    each(settings, function(key) {
+      if (settings.hasOwnProperty(key)) {
+        ajaxSetting[key] = settings[key];
+      }
+    });
+
+    var xhr = new XMLHttpRequest();
+
+    xhr.open(ajaxSetting.method, ajaxSetting.url, ajaxSetting.async);
+    xhr.setRequestHeader('Accept', ajaxSetting.dataType);
+    if(ajaxSetting.headers) {
+      each(ajaxSetting.headers,function(key){
+        xhr.setRequestHeader(key, ajaxSetting.headers[key]);
+      });
+    }
+    xhr.send(ajaxSetting.data);
+
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState != 4) return;
+
+      if (xhr.status != 200) {
+        ajaxSetting.error(xhr.status, xhr.statusText,xhr.responseText);
+      } else {
+        ajaxSetting.success(xhr.responseText);
+      }
+    };
+  };
+
   global.each = each;
-  global.deepClone = deepClone;
+  global.clone = deepClone;
   global.isArray = isArray;
   global.isObject = isObject;
   global.isFunction = isFunction;
+  global.ajax = ajax;
 
 })(this);
