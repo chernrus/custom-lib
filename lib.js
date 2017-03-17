@@ -1,11 +1,31 @@
-"use strict";
-
 (function(global) {
+  "use strict";
 
-  /*isArray, isObject, isFunction - Проверка параметров на соответствующие типы
+  /*Функция проверки на пустоту
+  *@param () - entity любой тип
+  */
+  var isEmpty = function (entity) {
+    if(!entity) {
+      return true;
+    } else if(isNumber(entity) || isString(entity) || isArray(entity)) {
+      var length = entity.length;
+      if(length <= 0) return true;
+    } else if(isObject(entity)) {
+      for(var key in entity) {
+        return false;
+      }
+      return true;
+    }
+    return false;
+  };
+
+  /*isArray, isObject, isFunction, isNumber, isString, isNull - Проверка параметров на соответствующие типы
   * @param {Array} arr - массив
   * @param {Object} obj - объект
-  * @param {Function} func - функция.
+  * @param {Function} func - функция
+  * @param {Number} num - числовая переменная.
+  * @param {String} str - строка.
+  * @param {Null} nul - null.
   */
   var isArray = function (arr) {
     return (Object.prototype.toString.call(arr) == "[object Array]");
@@ -17,6 +37,30 @@
 
   var isFunction = function (func) {
     return (Object.prototype.toString.call(func) == "[object Function]");
+  };
+
+  var isNumber = function (num) {
+    return (Object.prototype.toString.call(num) == "[object Number]");
+  };
+
+  var isString = function (str) {
+    return (Object.prototype.toString.call(str) == "[object String]");
+  };
+
+  var isNull = function (nul) {
+    return (Object.prototype.toString.call(nul) == "[object Null]");
+  };
+
+  /*Возвращает тип данных
+  * @param() entity любой тип данных
+  */
+  var getType = function (entity) {
+    var type = Object.prototype.toString.call(entity);
+    const regex = /\object (\w*)\]/;
+    var m;
+    if ((m = regex.exec(type)) !== null) {
+       return m[1];
+    }
   };
 
   /*
@@ -37,7 +81,7 @@
       var key = 0,
       length = source.length;
       for ( key = 0 ; key < length; key++) {
-        callback.call(scope, key, source[key], source);
+        callback.call(scope, key, source, source[key]);
       }
     } else if (isObject(source)) {
       for(key in source) {
@@ -142,11 +186,90 @@
     };
   };
 
+  /*Добавление/удаление ресурсов
+  */
+  /*Проверка всх состояний
+  *@param(Object) state состояния загрузки каждого ресурса
+  */
+  var checkState = function(state) {
+    for(var key in state) {
+      if(!state[key]){
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /*Добавление в элемент DOM дерева скрипта
+  * @param(String) - uri скрипта
+  * @param(DOM Element) - контейнер скриптов
+  */
+  var addScript = function(scriptSrc, head, state, callback) {
+    var js = document.createElement('script');
+    js.src = scriptSrc;
+    js.type = 'text/javascript';
+    js.setAttribute('defer','');
+    head.appendChild(js);
+    js.onload = function(){
+      state[scriptSrc] = true;
+      //проверка
+      if(checkState(state)){
+        callback();
+      }
+    };
+    js.onerror = function() {
+      alert('Error:' + this.src);
+    };
+  };
+
+  /*Загрузка скриптов main function
+  *@param (Array String/String) - Массив строк или массив, uri ресурсов
+  *@param (Function) - callback после загрузки всех скриптов
+  */
+
+  var loadJs = function(data, callback) {
+    var state = {};
+    each(data, function(key, data) {
+      state[data[key]] = false;
+    });
+
+    var head = document.head;
+
+    if(isArray(data)) {
+        each(data, function(key, data) {
+           addScript(data[key], head, state, callback);
+        });
+    } else addScript(data[key], head, state, callback);
+  };
+
+  /*Удаление скрипта
+  * @param (String) scriptSrc uri ресурса на удаление
+  */
+  var removeJs = function(scriptSrc) {
+    var alltargets = document.getElementsByTagName('script');
+    var i = 0,
+      length = alltargets.length - 1;
+    while(length)
+    {
+      if (alltargets[length].src && alltargets[length].src.indexOf(scriptSrc)!= -1) {
+        alltargets[length].parentNode.removeChild(alltargets[length]);
+      }
+      length--;
+    }
+  };
+
+  global.isEmpty = isEmpty;
+  global.getType = getType;
   global.each = each;
   global.clone = deepClone;
   global.isArray = isArray;
   global.isObject = isObject;
   global.isFunction = isFunction;
+  global.isNumber = isNumber;
+  global.isString = isString;
+  global.isNull = isNull;
   global.ajax = ajax;
+  global.loadJs = loadJs;
+  global.removeJs = removeJs;
 
 })(this);

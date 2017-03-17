@@ -1,0 +1,8 @@
+Список тем:
+1. Инструкция подключения канала Telegram - адаптивная верстка, CSS, слайдер.
+2. Форма обратной связи - работа с формой, всплывающее окно, анимация на CSS, валидация, AJAX, JavaScript
+  Link: https://chernrus.github.io/user-guide/
+3. Разворачивающийся список на JS - анимация на JS
+  Link: https://chernrus.github.io/slide-list/
+4. Универсальные фунции(forEach, copy, AJAX) - native JS
+  Link: https://chernrus.github.io/each-copy/

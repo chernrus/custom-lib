@@ -1,21 +1,8 @@
-var addScript = function(key, data, scriptSrc) {
-  var js = document.createElement('script');
-  js.src = scriptSrc;
-  js.type = 'text/javascript';
-  var body = document.getElementsByTagName('body')[0];
-  body.appendChild(js);
-};
 
-var load = function(data, callback) {
-  if(isArray(data)){
-      each(data, addScript);
-  } else addScript(data);
-
-  callback(data);
-};
 
 var arr2 = 'script/script1.js';
 var arr = [
+  'https://example.com/404.js',
   'script/script1.js',
   'script/script2.js',
   'script/script3.js',
@@ -23,6 +10,21 @@ var arr = [
   'script/script5.js'
 ];
 
-load(arr, function(src){
-  console.log(src);
-});
+var f = function() {
+  console.log('Success');
+};
+
+loadJs(arr, f);
+
+//script.onload//поставить на каждый файл onload*/
+//window.onload -> свое событие-> по событию callback
+
+// callback(data);
+
+// removeJs(arr2);
+
+// var script = addScript(data[key]);
+// jsContainer.appendChild(script);
+// script.onerror = function() {
+//   alert('Error: ' + this.src);
+// };

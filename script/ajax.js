@@ -1,11 +1,3 @@
-
-// $.ajax({
-//   url: 'https://test.em70.ru/rav/callback/',
-//   dataType: 'html'
-// });
-
-
-//сам ajax
 var ajax = function (settings,callback, errback, complete) {
   var ajaxSetting = {
     url: '',
@@ -14,11 +6,11 @@ var ajax = function (settings,callback, errback, complete) {
     async: true,
     headers: '',
     dataType: '*/*',
-    success: function(res){
-      alert(res);
+    success: function(){
+      alert('Success');
     },
-    error: function(res){
-      alert(res);
+    error: function(){
+      alert('Error');
     }
   }
 
@@ -31,7 +23,7 @@ var ajax = function (settings,callback, errback, complete) {
   var xhr = new XMLHttpRequest();
 
   xhr.open(ajaxSetting.method, ajaxSetting.url, ajaxSetting.async);
-  xhr.setRequestHeader('Accept', 'application/' + ajaxSetting.dataType + '*/*');
+  xhr.setRequestHeader('Accept', 'application/' + ajaxSetting.dataType);
   if(ajaxSetting.headers) {
     each(ajaxSetting.headers,function(key){
       xhr.setRequestHeader(key, ajaxSetting.headers[key]);
@@ -76,8 +68,3 @@ ajax({
   error: showError,
   dataType: 'javascript'
 });
-// Своя функция ajax, принимает callback, error callback, success callback
-// jquary ajax
-// Динамическая подгрузка ресурсов load(array string/string, callback) - где string -uri ресурса
-// callback вызывается тогда когда все ресурсы(js файлы) загрузились
-// deferet ie9+
